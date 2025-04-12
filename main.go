@@ -1,6 +1,6 @@
 package main
 
-import "gco/cmd"
+import "github.com/adaviloper/gco/cmd"
 
 func main() {
 	cmd.Execute()

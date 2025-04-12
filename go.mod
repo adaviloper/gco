@@ -1,4 +1,4 @@
-module gco
+module github.com/adaviloper/gco
 
 go 1.24.1
 
