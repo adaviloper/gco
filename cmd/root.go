@@ -41,6 +41,13 @@ var rootCmd = &cobra.Command{
 	// Uncoment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
+		hasUncommittedWork := checkForUncommittedWork()
+
+		if hasUncommittedWork {
+			return
+		}
+
+
  		remote, _ := cmd.Root().Flags().GetBool("remote")
 
 		ops := []string{
@@ -52,7 +59,6 @@ var rootCmd = &cobra.Command{
 			ops = append(ops, "-a")
 		}
 		
-		fmt.Println(strings.Join(ops, " "))
 		shellCommand := exec.Command("git", ops...)
 
 		stdOut, err := shellCommand.Output()
@@ -91,9 +97,37 @@ var rootCmd = &cobra.Command{
 	},
 }
 
+func git(args ...string) ([]byte, error) {
+	checkoutCommand := exec.Command("git", args...)
+	output, err := checkoutCommand.Output()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return output, nil
+}
+
+func checkForUncommittedWork() bool {
+	hasWork, err := git("status", "--short")
+
+	if err != nil {
+		return true
+	}
+
+	if len(hasWork) > 0 {
+		fmt.Println("has work")
+	} else {
+		fmt.Println("does not have work")
+	}
+
+	fmt.Println(hasWork)
+	fmt.Println(string(hasWork))
+	return false
+}
+
 func checkoutBranch(branch string) {
-	checkoutCommand := exec.Command("git", "checkout", branch)
-	_, err := checkoutCommand.Output()
+	_, err := git("git", "checkout", branch)
 
 	if err != nil {
 		return
