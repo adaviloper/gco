@@ -44,16 +44,16 @@ var rootCmd = &cobra.Command{
 		hasUncommittedWork := checkForUncommittedWork()
 
 		if hasUncommittedWork {
+			fmt.Println("Please commit any work before switching branches")
 			return
 		}
 
-
  		remote, _ := cmd.Root().Flags().GetBool("remote")
+		target := args[0]
 
 		ops := []string{
 			"branch",
 		}
-		target := args[0]
 
 		if remote {
 			ops = append(ops, "-a")
@@ -112,18 +112,11 @@ func checkForUncommittedWork() bool {
 	hasWork, err := git("status", "--short")
 
 	if err != nil {
+		fmt.Println("An error occurred while trying to check the status.")
 		return true
 	}
 
-	if len(hasWork) > 0 {
-		fmt.Println("has work")
-	} else {
-		fmt.Println("does not have work")
-	}
-
-	fmt.Println(hasWork)
-	fmt.Println(string(hasWork))
-	return false
+	return len(hasWork) > 0
 }
 
 func checkoutBranch(branch string) {
