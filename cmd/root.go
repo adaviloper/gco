@@ -120,7 +120,7 @@ func checkForUncommittedWork() bool {
 
 func checkoutBranch(branch string) {
 	fmt.Printf("Switching to [%s]", branch)
-	_, err := git("git", "checkout", branch)
+	_, err := git("checkout", branch)
 
 	if err != nil {
 		return
