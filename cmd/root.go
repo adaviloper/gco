@@ -71,7 +71,6 @@ var rootCmd = &cobra.Command{
 		branches := prepareBranches(string(stdOut), target)
 
 		if target == "-" {
-			fmt.Printf("Switching to previous branch")
 			checkoutBranch(target)
 		} else if len(branches) == 1 {
 			fmt.Printf("Switching to [%s]", branches[0])
@@ -120,6 +119,7 @@ func checkForUncommittedWork() bool {
 }
 
 func checkoutBranch(branch string) {
+	fmt.Printf("Switching to [%s]", branch)
 	_, err := git("git", "checkout", branch)
 
 	if err != nil {
