@@ -4,13 +4,10 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"os"
-	"os/exec"
 	"strings"
 
 	"github.com/judedaryl/go-arrayutils"
-	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +30,6 @@ var rootCmd = &cobra.Command{
 	Use:   "gco",
 	Short: "Convenient git branch switcher",
 	Long: `Shell utility for quickly switching between git branches by pattern-matching:
-
 	gco full/branch-name
 	gco <some-substring>
 	gco <ticket_number>`,
@@ -41,90 +37,8 @@ var rootCmd = &cobra.Command{
 	// Uncoment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
-		hasUncommittedWork := checkForUncommittedWork()
-
-		if hasUncommittedWork {
-			fmt.Println("Please commit any work before switching branches")
-			return
-		}
-
- 		remote, _ := cmd.Root().Flags().GetBool("remote")
-		target := args[0]
-
-		ops := []string{
-			"branch",
-		}
-
-		if remote {
-			ops = append(ops, "-a")
-		}
-		
-		shellCommand := exec.Command("git", ops...)
-
-		stdOut, err := shellCommand.Output()
-
-		if err != nil {
-			fmt.Printf("Failed to get branches: [%s]", err.Error())
-			return
-		}
-
-		branches := prepareBranches(string(stdOut), target)
-
-		if target == "-" {
-			checkoutBranch(target)
-		} else if len(branches) == 1 {
-			fmt.Printf("Switching to [%s]", branches[0])
-			checkoutBranch(branches[0])
-		} else if len(branches) > 1 {
-			prompt := promptui.Select{
-				Label: "Which branch would you like to switch to?",
-				Items: branches,
-			}
-
-			_, branch, err := prompt.Run()
-
-			if err != nil {
-				fmt.Println("No branch selected")
-				return
-			}
-
-			fmt.Printf("Switching to [%s]", branch)
-			checkoutBranch(branch)
-		} else {
-			fmt.Println("No matching branches found.")
-		}
+		switchCmd.Run(cmd, args)
 	},
-}
-
-func git(args ...string) ([]byte, error) {
-	checkoutCommand := exec.Command("git", args...)
-	output, err := checkoutCommand.Output()
-
-	if err != nil {
-		return nil, err
-	}
-
-	return output, nil
-}
-
-func checkForUncommittedWork() bool {
-	hasWork, err := git("status", "--short")
-
-	if err != nil {
-		fmt.Println("An error occurred while trying to check the status.")
-		return true
-	}
-
-	return len(hasWork) > 0
-}
-
-func checkoutBranch(branch string) {
-	fmt.Printf("Switching to [%s]", branch)
-	_, err := git("checkout", branch)
-
-	if err != nil {
-		return
-	}
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
