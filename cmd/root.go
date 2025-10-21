@@ -37,6 +37,10 @@ var rootCmd = &cobra.Command{
 	// Uncoment the following line if your bare application
 	// has an action associated with it:
     Run: func(cmd *cobra.Command, args []string) {
+        if len(args) > 0 && args[0] == "story" {
+            storyCmd.Run(cmd, args)
+            return
+        }
         if len(args) > 0 && args[0] == "bug" {
             bugCmd.Run(cmd, args)
             return
