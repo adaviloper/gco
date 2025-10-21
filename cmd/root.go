@@ -36,9 +36,13 @@ var rootCmd = &cobra.Command{
 	Args: cobra.ExactArgs(1),
 	// Uncoment the following line if your bare application
 	// has an action associated with it:
-	Run: func(cmd *cobra.Command, args []string) {
-		switchCmd.Run(cmd, args)
-	},
+    Run: func(cmd *cobra.Command, args []string) {
+        if len(args) > 0 && args[0] == "bug" {
+            bugCmd.Run(cmd, args)
+            return
+        }
+        switchCmd.Run(cmd, args)
+    },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
