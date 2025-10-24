@@ -21,7 +21,7 @@ func Run(args ...string) ([]byte, error) {
 
 func CheckoutBranch(branch string) {
 	fmt.Printf("Switching to [%s]", branch)
-	_, err := Run("checkout", branch)
+	_, err := Run("checkout", "-B", branch)
 
 	if err != nil {
 		return
