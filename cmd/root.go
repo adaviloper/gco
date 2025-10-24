@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"strings"
 
@@ -116,6 +115,6 @@ func initializeConfig(cmd *cobra.Command) error {
 	}
 
 	// This is an optional but useful step to debug your config.
-	fmt.Println("Configuration initialized. Using config file:", viper.ConfigFileUsed())
+	// fmt.Println("Configuration initialized. Using config file:", viper.ConfigFileUsed())
 	return nil
 }
