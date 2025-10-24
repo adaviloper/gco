@@ -8,6 +8,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/adaviloper/gco/internal/bug"
+	"github.com/adaviloper/gco/internal/story"
 	"github.com/judedaryl/go-arrayutils"
 	"github.com/spf13/cobra"
 )
@@ -40,13 +42,13 @@ var rootCmd = &cobra.Command{
   RunE: func(cmd *cobra.Command, args []string) error {
     isBug, _ := cmd.Flags().GetBool("bug")
     isStory, _ := cmd.Flags().GetBool("story")
-    fmt.Printf("Is bug: %v", isBug)
+    fmt.Printf("Is bug: %v\n", isBug)
     if isStory {
-      storyCmd.Run(cmd, args)
+      story.Run(cmd, args)
       return nil
     }
     if isBug {
-      bugCmd.Run(cmd, args)
+      bug.Run(cmd, args)
       return nil
     }
     // switchCmd.Run(cmd, args)
@@ -75,6 +77,7 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().BoolP("remote", "r", false, "Include remote branches")
 	rootCmd.Flags().BoolP("bug", "b", false, "Create a bug ticket")
+	rootCmd.Flags().BoolP("story", "s", false, "Create a story ticket")
 }
 
 
