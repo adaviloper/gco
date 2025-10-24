@@ -26,7 +26,7 @@ func Run(cmd *cobra.Command, args []string) {
 			}
 		}
 	}
-	fmt.Printf("Prefix: %s\n", prefix)
+	// fmt.Printf("Prefix: %s\n", prefix)
 	branch := str_utils.Slugify(strings.Join(args, "-"))
 	git.CheckoutBranch(fmt.Sprintf("%s/%s", prefix, branch))
 }

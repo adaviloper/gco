@@ -48,7 +48,6 @@ func Run(cmd *cobra.Command, args []string) {
 	if target == "-" {
 		git.CheckoutBranch(target)
 	} else if len(branches) == 1 {
-		fmt.Printf("Switching to [%s]", branches[0])
 		git.CheckoutBranch(branches[0])
 	} else if len(branches) > 1 {
 		prompt := promptui.Select{
@@ -63,7 +62,6 @@ func Run(cmd *cobra.Command, args []string) {
 			return
 		}
 
-		fmt.Printf("Switching to [%s]", branch)
 		git.CheckoutBranch(branch)
 	} else {
 		fmt.Println("No matching branches found.")
