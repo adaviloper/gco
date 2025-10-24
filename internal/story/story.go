@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/adaviloper/gco/git"
+	"github.com/adaviloper/gco/internal/git"
 	"github.com/adaviloper/gco/internal/str_utils"
 	"github.com/spf13/cobra"
 )

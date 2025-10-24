@@ -4,29 +4,13 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"os"
-	"strings"
 
+	"github.com/adaviloper/gco/internal/branch"
 	"github.com/adaviloper/gco/internal/bug"
 	"github.com/adaviloper/gco/internal/story"
-	"github.com/judedaryl/go-arrayutils"
 	"github.com/spf13/cobra"
 )
-
-func prepareBranches(stdOut string, target string) []string {
-	branches := strings.Split(stdOut, "\n")
-
-	branches = arrayutils.Filter(branches, func(branch string) bool {
-		return strings.Contains(branch, target) && !strings.Contains(branch, "*")
-	})
-
-	branches = arrayutils.Map(branches, func(branch string) string {
-		return strings.Trim(branch, " ")
-	})
-
-  return branches
-}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -42,7 +26,6 @@ var rootCmd = &cobra.Command{
   RunE: func(cmd *cobra.Command, args []string) error {
     isBug, _ := cmd.Flags().GetBool("bug")
     isStory, _ := cmd.Flags().GetBool("story")
-    fmt.Printf("Is bug: %v\n", isBug)
     if isStory {
       story.Run(cmd, args)
       return nil
@@ -51,7 +34,7 @@ var rootCmd = &cobra.Command{
       bug.Run(cmd, args)
       return nil
     }
-    // switchCmd.Run(cmd, args)
+    branch.Run(cmd, args)
   	return nil
   },
 }

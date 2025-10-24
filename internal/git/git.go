@@ -40,7 +40,7 @@ func CheckForUncommittedWork() bool {
 }
 
 func Bug(id int, desc string) string {
-	return generateBranchName(TicketData{Type: "bugfix", ID: id, Description: desc})
+	return GenerateBranchName(TicketData{Type: "bugfix", ID: id, Description: desc})
 }
 
 type TicketData struct {
@@ -49,7 +49,7 @@ type TicketData struct {
 	Description string
 }
 
-func generateBranchName(ticket TicketData) string {
+func GenerateBranchName(ticket TicketData) string {
     typePart := strings.ToLower(strings.TrimSpace(ticket.Type))
     if typePart == "" {
         typePart = "feature"
