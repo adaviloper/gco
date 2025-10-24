@@ -4,6 +4,7 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -33,20 +34,24 @@ var rootCmd = &cobra.Command{
 	gco full/branch-name
 	gco <some-substring>
 	gco <ticket_number>`,
-	Args: cobra.ExactArgs(1),
+	// Args: cobra.NoArgs(),
 	// Uncoment the following line if your bare application
 	// has an action associated with it:
-    Run: func(cmd *cobra.Command, args []string) {
-        if len(args) > 0 && args[0] == "story" {
-            storyCmd.Run(cmd, args)
-            return
-        }
-        if len(args) > 0 && args[0] == "bug" {
-            bugCmd.Run(cmd, args)
-            return
-        }
-        switchCmd.Run(cmd, args)
-    },
+  RunE: func(cmd *cobra.Command, args []string) error {
+    isBug, _ := cmd.Flags().GetBool("bug")
+    isStory, _ := cmd.Flags().GetBool("story")
+    fmt.Printf("Is bug: %v", isBug)
+    if isStory {
+      storyCmd.Run(cmd, args)
+      return nil
+    }
+    if isBug {
+      bugCmd.Run(cmd, args)
+      return nil
+    }
+    // switchCmd.Run(cmd, args)
+  	return nil
+  },
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -69,6 +74,7 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().BoolP("remote", "r", false, "Include remote branches")
+	rootCmd.Flags().BoolP("bug", "b", false, "Create a bug ticket")
 }
 
 
