@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"strings"
 
@@ -33,22 +34,33 @@ var rootCmd = &cobra.Command{
 	// Uncoment the following line if your bare application
 	// has an action associated with it:
   RunE: func(cmd *cobra.Command, args []string) error {
-  	// fmt.Printf("%v\n", viper.Get("repositories"))
-    isBug, _ := cmd.Flags().GetBool("bug")
-    isStory, _ := cmd.Flags().GetBool("story")
-    isSpike, _ := cmd.Flags().GetBool("spike")
-    if isStory {
-      story.Run(cmd, args)
-      return nil
-    }
-    if isBug {
-      bug.Run(cmd, args)
-      return nil
-    }
-    if isSpike {
-      spike.Run(cmd, args)
-      return nil
-    }
+  	fmt.Printf("%v\n", viper.Get("repositories"))
+  	ticketTypes := []string{
+  		"bug",
+  		"story",
+  		"spike",
+  	}
+
+		selectedType := ""
+  	for _, ticketType := range ticketTypes {
+  		val, _ := cmd.Flags().GetBool(ticketType)
+  		if val == true {
+  			selectedType = ticketType
+  			break;
+  		}
+  	}
+  	switch selectedType {
+  	case "bug":
+  		bug.Run(cmd, args)
+  		return nil
+  	case "spike":
+  		spike.Run(cmd, args)
+  		return nil
+  	case "story":
+  		story.Run(cmd, args)
+  		return nil
+  	}
+
     branch.Run(cmd, args)
   	return nil
   },
@@ -74,6 +86,7 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().BoolP("remote", "r", false, "Include remote branches")
+
 	rootCmd.Flags().BoolP("bug", "b", false, "Create a bug ticket")
 	rootCmd.Flags().BoolP("story", "s", false, "Create a story ticket")
 	rootCmd.Flags().BoolP("spike", "p", false, "Create a spike ticket")
@@ -85,6 +98,22 @@ func initializeConfig(cmd *cobra.Command) error {
 	// Allow for nested keys in environment variables (e.g. `MYAPP_DATABASE_HOST`)
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "*", "-", "*"))
 	viper.AutomaticEnv()
+	viper.SetDefault(
+		"repositories",
+		map[string]map[string]string{
+			"default": {
+				"bug": "bug",
+				"story": "feat",
+				"spike": "spike",
+				"epic": "epic",
+				"task": "task",
+			},
+		},
+		)
+	viper.SetDefault(
+		"separator",
+		"/",
+		)
 
 	// 2. Handle the configuration file.
 	if cfgFile != "" {
@@ -112,16 +141,6 @@ func initializeConfig(cmd *cobra.Command) error {
 		if !errors.As(err, &configFileNotFoundError) {
 			return err
 		}
-	} else {
-		viper.SetDefault(
-			"repositories",
-			map[string]map[string]string{
-				"gco": {
-					"bug": "bugfix",
-					"story": "feat",
-				},
-			},
-			)
 	}
 
 	// 4. Bind Cobra flags to Viper.

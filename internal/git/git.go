@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/adaviloper/gco/internal/str_utils"
 	"github.com/spf13/viper"
 )
 
@@ -41,55 +42,25 @@ func CheckForUncommittedWork() bool {
 	return len(hasWork) > 0
 }
 
-func Bug(id int, desc string) string {
-	return GenerateBranchName(TicketData{Type: "bugfix", ID: id, Description: desc})
-}
-
 type TicketData struct {
 	Type string
 	ID int
 	Description string
 }
 
-func GenerateBranchName(ticket TicketData) string {
-    typePart := strings.ToLower(strings.TrimSpace(ticket.Type))
-    if typePart == "" {
-        typePart = "feature"
-    }
-
-    prefix := ticketPrefix()
-    idPart := fmt.Sprintf("%d", ticket.ID)
-
-    // slugify description: lowercase, replace non-alnum with '-', trim '-'
-    desc := strings.ToLower(strings.TrimSpace(ticket.Description))
-    // Replace any sequence of non [a-z0-9] with '-'
-    var b strings.Builder
-    prevDash := false
-    for _, r := range desc {
-        if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9' || r == '_') {
-            b.WriteRune(r)
-            prevDash = false
-            continue
-        }
-        if !prevDash {
-            b.WriteByte('-')
-            prevDash = true
-        }
-    }
-    slug := strings.Trim(b.String(), "-")
-
-    base := idPart
-    if prefix != "" {
-        base = prefix + "-" + idPart
-    }
-
-    if slug != "" {
-        return typePart + "/" + base + "-" + slug
-    }
-    return typePart + "/" + base
+func GenerateBranchName(category string, description string) {
+	prefix, err := GetPrefixForRepo(category)
+	if err != nil {
+	  return
+	}
+	ticketPrefix, _ := GetCurrentRepoProperty("ticket_prefix")
+	fmt.Printf("ticket prefix: %s\n", ticketPrefix)
+	branch := str_utils.Slugify(description)
+	fmt.Printf("Branch: %s/%s-%s\n", prefix, ticketPrefix, branch)
+	CheckoutBranch(fmt.Sprintf("%s%s%s-%s", prefix, viper.GetString("separator"), ticketPrefix, branch))
 }
 
-func ticketPrefix() string {
+func TicketPrefix() string {
     // Known repository name → ticket prefix mappings.
     prefixes := map[string]string{
         "ultimate-tic-tac-toe": "UTTT",
@@ -130,7 +101,7 @@ func GetCurrentRepoName() (string, error) {
 	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
 	output, err := cmd.Output()
 	if err != nil {
-		return "", fmt.Errorf("failed to get git repo root: %w", err)
+		return "default", nil
 	}
 
 	// Extract last directory name (repo name)
@@ -138,18 +109,23 @@ func GetCurrentRepoName() (string, error) {
 	return parts[len(parts)-1], nil
 }
 
-func GetPrefixForRepo(category string) (string, error) {
+func GetCurrentRepoProperty(prop string) (string, error) {
 	repo, err := GetCurrentRepoName()
 	if err != nil {
 		return "", err
 	}
 
-	key := fmt.Sprintf("repositories.%s.%s", repo, category)
-	prefix := viper.GetString(key)
+	key := fmt.Sprintf("repositories.%s.%s", repo, prop)
+	return viper.GetString(key), nil
+}
+
+func GetPrefixForRepo(category string) (string, error) {
+	prefix, _ := GetCurrentRepoProperty(category)
 
 	if prefix == "" {
-		return "", fmt.Errorf("no prefix found for repo %q and category %q", repo, category)
+		return category, nil
 	}
 
 	return prefix, nil
 }
+
