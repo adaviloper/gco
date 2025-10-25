@@ -10,6 +10,7 @@ import (
 
 	"github.com/adaviloper/gco/internal/branch"
 	"github.com/adaviloper/gco/internal/bug"
+	"github.com/adaviloper/gco/internal/spike"
 	"github.com/adaviloper/gco/internal/story"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -32,14 +33,20 @@ var rootCmd = &cobra.Command{
 	// Uncoment the following line if your bare application
 	// has an action associated with it:
   RunE: func(cmd *cobra.Command, args []string) error {
+  	// fmt.Printf("%v\n", viper.Get("repositories"))
     isBug, _ := cmd.Flags().GetBool("bug")
     isStory, _ := cmd.Flags().GetBool("story")
+    isSpike, _ := cmd.Flags().GetBool("spike")
     if isStory {
       story.Run(cmd, args)
       return nil
     }
     if isBug {
       bug.Run(cmd, args)
+      return nil
+    }
+    if isSpike {
+      spike.Run(cmd, args)
       return nil
     }
     branch.Run(cmd, args)
@@ -61,7 +68,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.gco.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.config/gco/config.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -69,11 +76,12 @@ func init() {
 	rootCmd.Flags().BoolP("remote", "r", false, "Include remote branches")
 	rootCmd.Flags().BoolP("bug", "b", false, "Create a bug ticket")
 	rootCmd.Flags().BoolP("story", "s", false, "Create a story ticket")
+	rootCmd.Flags().BoolP("spike", "p", false, "Create a spike ticket")
 }
 
 func initializeConfig(cmd *cobra.Command) error {
 	// 1. Set up Viper to use environment variables.
-	viper.SetEnvPrefix("MYAPP")
+	viper.SetEnvPrefix("GCO")
 	// Allow for nested keys in environment variables (e.g. `MYAPP_DATABASE_HOST`)
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "*", "-", "*"))
 	viper.AutomaticEnv()
@@ -104,6 +112,16 @@ func initializeConfig(cmd *cobra.Command) error {
 		if !errors.As(err, &configFileNotFoundError) {
 			return err
 		}
+	} else {
+		viper.SetDefault(
+			"repositories",
+			map[string]map[string]string{
+				"gco": {
+					"bug": "bugfix",
+					"story": "feat",
+				},
+			},
+			)
 	}
 
 	// 4. Bind Cobra flags to Viper.

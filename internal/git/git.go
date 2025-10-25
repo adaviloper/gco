@@ -1,11 +1,13 @@
 package git
 
 import (
-    "fmt"
-    "os"
-    "os/exec"
-    "path/filepath"
-    "strings"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+
+	"github.com/spf13/viper"
 )
 
 func Run(args ...string) ([]byte, error) {
@@ -124,4 +126,30 @@ func ticketPrefix() string {
     return ""
 }
 
+func GetCurrentRepoName() (string, error) {
+	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
+	output, err := cmd.Output()
+	if err != nil {
+		return "", fmt.Errorf("failed to get git repo root: %w", err)
+	}
 
+	// Extract last directory name (repo name)
+	parts := strings.Split(strings.TrimSpace(string(output)), "/")
+	return parts[len(parts)-1], nil
+}
+
+func GetPrefixForRepo(category string) (string, error) {
+	repo, err := GetCurrentRepoName()
+	if err != nil {
+		return "", err
+	}
+
+	key := fmt.Sprintf("repositories.%s.%s", repo, category)
+	prefix := viper.GetString(key)
+
+	if prefix == "" {
+		return "", fmt.Errorf("no prefix found for repo %q and category %q", repo, category)
+	}
+
+	return prefix, nil
+}

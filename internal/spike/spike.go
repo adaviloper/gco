@@ -1,7 +1,7 @@
 /*
 Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 */
-package bug
+package spike
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 )
 
 func Run(cmd *cobra.Command, args []string) {
-	prefix, err := git.GetPrefixForRepo("bug")
+	prefix, err := git.GetPrefixForRepo("spike")
 	if err != nil {
 	  return 
 	}
