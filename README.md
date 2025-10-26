@@ -27,13 +27,11 @@ gco --ticket <ticket-type> <ticket-id> <some-arbitrary-length-ticket-description
 
 ```yaml
 repositories:
-  my_repo:
+  default:
     ticket_prefix: MY_PREFIX
-    bug: bug_type // optional
-    story: story_type // optional
-    spike: spike_type // optional
-    foo: bar
-    // add whatever additional mappings you'd like
+    bug: bugfix // optional
+    // add whatever additional mappings you'd like for whatever <ticket-type> value you pass in
+separator: "/"
 ```
 
 ## Flags
@@ -42,6 +40,6 @@ repositories:
 | Flag | Name | Description |
 |--- | --- | --- |
 | -r       | remote | Include parsing through remote branches |
-| --ticket | task   | Create a ticket branch with the mapped prefix |
+| --ticket | ticket   | Create a ticket branch with the mapped prefix |
 ---
 
