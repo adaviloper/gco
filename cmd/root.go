@@ -43,6 +43,7 @@ var rootCmd = &cobra.Command{
   		"story",
   		"spike",
   		"task",
+  		"vuln",
   	}
 
 		selectedType := ""
@@ -67,6 +68,9 @@ var rootCmd = &cobra.Command{
   		story.Run(cmd, args)
   		return nil
   	case "task":
+  		task.Run(cmd, args)
+  		return nil
+  	case "vuln":
   		task.Run(cmd, args)
   		return nil
   	}
@@ -102,6 +106,7 @@ func init() {
 	rootCmd.Flags().BoolP("story", "s", false, "Create a story ticket")
 	rootCmd.Flags().BoolP("spike", "p", false, "Create a spike ticket")
 	rootCmd.Flags().BoolP("task", "t", false, "Create a task ticket")
+	rootCmd.Flags().BoolP("vuln", "v", false, "Create a vulnerability fix ticket")
 }
 
 func initializeConfig(cmd *cobra.Command) error {
@@ -119,6 +124,7 @@ func initializeConfig(cmd *cobra.Command) error {
 				"spike": "spike",
 				"epic": "epic",
 				"task": "task",
+				"vuln": "vuln",
 			},
 		},
 		)
