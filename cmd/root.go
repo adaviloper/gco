@@ -10,9 +10,9 @@ import (
 	"strings"
 
 	"github.com/adaviloper/gco/internal/branch"
-	"github.com/adaviloper/gco/internal/bug"
-	"github.com/adaviloper/gco/internal/spike"
-	"github.com/adaviloper/gco/internal/story"
+	"github.com/adaviloper/gco/internal/tickets/bug"
+	"github.com/adaviloper/gco/internal/tickets/spike"
+	"github.com/adaviloper/gco/internal/tickets/story"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
