@@ -20,11 +20,7 @@ gco <partial-string-match>
 
 ### Branch Creation
 ```sh
-gco -b <ticket-id> some arbitrary length ticket description
-gco -e <ticket-id> some arbitrary length ticket description
-gco -s <ticket-id> some arbitrary length ticket description
-gco -p <ticket-id> some arbitrary length ticket description
-gco -t <ticket-id> some arbitrary length ticket description
+gco --ticket <ticket-type> <ticket-id> <some-arbitrary-length-ticket-description>
 ```
 
 ## Configuration
@@ -34,10 +30,10 @@ repositories:
   my_repo:
     ticket_prefix: MY_PREFIX
     bug: bug_type // optional
-    epic: epic_type // optional
     story: story_type // optional
     spike: spike_type // optional
-    task: task_type // optional
+    foo: bar
+    // add whatever additional mappings you'd like
 ```
 
 ## Flags
@@ -45,11 +41,7 @@ repositories:
 
 | Flag | Name | Description |
 |--- | --- | --- |
-| -r | remote | Include parsing through remote branches |
-| -b | bug    | Create a bug ticket branch |
-| -e | epic   | Create a epic ticket branch |
-| -s | story  | Create a story ticket branch |
-| -p | spike  | Create a spike ticket branch |
-| -t | task   | Create a task ticket branch |
+| -r       | remote | Include parsing through remote branches |
+| --ticket | task   | Create a ticket branch with the mapped prefix |
 ---
 
