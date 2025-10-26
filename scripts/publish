@@ -1,10 +1,21 @@
 #!/bin/bash
+set -e
 
 VERSION="v$1"
+if [ -z "$1" ]; then
+  echo "Usage: ./release.sh <version-number> (e.g. ./release.sh 0.1.18)"
+  exit 1
+fi
 
+# Ensure all changes are committed before tagging
+git diff --quiet || (echo "Uncommitted changes detected!" && exit 1)
+
+# Tag and push first
+git tag -a "$VERSION" -m "Release $VERSION"
+git push origin "$VERSION"
+
+# Then build and test install
 go build .
-git add gco
-git commit -m "Publishing $VERSION"
-git tag $VERSION
-git push origin $VERSION
-git push
+GOPROXY=direct go install github.com/adaviloper/gco@"$VERSION"
+
+echo "✅ Released and installed $VERSION"
