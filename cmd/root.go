@@ -10,17 +10,13 @@ import (
 	"strings"
 
 	"github.com/adaviloper/gco/internal/branch"
-	"github.com/adaviloper/gco/internal/tickets/bug"
-	"github.com/adaviloper/gco/internal/tickets/epic"
-	"github.com/adaviloper/gco/internal/tickets/spike"
-	"github.com/adaviloper/gco/internal/tickets/story"
-	"github.com/adaviloper/gco/internal/tickets/task"
-	"github.com/adaviloper/gco/internal/tickets/vuln"
+	"github.com/adaviloper/gco/internal/ticketCreator"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
+var ticketType string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -38,43 +34,12 @@ var rootCmd = &cobra.Command{
 	// has an action associated with it:
   RunE: func(cmd *cobra.Command, args []string) error {
   	fmt.Printf("%v\n", viper.Get("repositories"))
-  	ticketTypes := []string{
-  		"bug",
-  		"epic",
-  		"story",
-  		"spike",
-  		"task",
-  		"vuln",
-  	}
 
-		selectedType := ""
-  	for _, ticketType := range ticketTypes {
-  		val, _ := cmd.Flags().GetBool(ticketType)
-  		if val == true {
-  			selectedType = ticketType
-  			break;
-  		}
-  	}
-  	switch selectedType {
-  	case "bug":
-  		bug.Run(cmd, args)
-  		return nil
-  	case "epic":
-  		epic.Run(cmd, args)
-  		return nil
-  	case "spike":
-  		spike.Run(cmd, args)
-  		return nil
-  	case "story":
-  		story.Run(cmd, args)
-  		return nil
-  	case "task":
-  		task.Run(cmd, args)
-  		return nil
-  	case "vuln":
-  		vuln.Run(cmd, args)
-  		return nil
-  	}
+		if ticketType != "" {
+			ticketCreator.Run(ticketType, args)
+			fmt.Printf("Created dynamic [%s] ticket", ticketType)
+			return nil
+		}
 
     branch.Run(cmd, args)
   	return nil
@@ -102,12 +67,7 @@ func init() {
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().BoolP("remote", "r", false, "Include remote branches")
 
-	rootCmd.Flags().BoolP("bug", "b", false, "Create a bug ticket")
-	rootCmd.Flags().BoolP("epic", "e", false, "Create an epic ticket")
-	rootCmd.Flags().BoolP("story", "s", false, "Create a story ticket")
-	rootCmd.Flags().BoolP("spike", "p", false, "Create a spike ticket")
-	rootCmd.Flags().BoolP("task", "t", false, "Create a task ticket")
-	rootCmd.Flags().BoolP("vuln", "v", false, "Create a vulnerability fix ticket")
+	rootCmd.Flags().StringVar(&ticketType, "ticket", "", "Create a ticket")
 }
 
 func initializeConfig(cmd *cobra.Command) error {
