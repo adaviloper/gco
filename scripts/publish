@@ -7,3 +7,4 @@ git add gco
 git commit -m "Publishing $VERSION"
 git tag $VERSION
 git push origin $VERSION
+git push
