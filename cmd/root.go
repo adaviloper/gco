@@ -78,16 +78,7 @@ func initializeConfig(cmd *cobra.Command) error {
 	viper.AutomaticEnv()
 	viper.SetDefault(
 		"repositories",
-		map[string]map[string]string{
-			"default": {
-				"bug": "bug",
-				"story": "feat",
-				"spike": "spike",
-				"epic": "epic",
-				"task": "task",
-				"vuln": "vuln",
-			},
-		},
+		map[string]map[string]string{},
 		)
 	viper.SetDefault(
 		"separator",
