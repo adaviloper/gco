@@ -15,6 +15,7 @@ import (
 	"github.com/adaviloper/gco/internal/tickets/spike"
 	"github.com/adaviloper/gco/internal/tickets/story"
 	"github.com/adaviloper/gco/internal/tickets/task"
+	"github.com/adaviloper/gco/internal/tickets/vuln"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -71,7 +72,7 @@ var rootCmd = &cobra.Command{
   		task.Run(cmd, args)
   		return nil
   	case "vuln":
-  		task.Run(cmd, args)
+  		vuln.Run(cmd, args)
   		return nil
   	}
 
