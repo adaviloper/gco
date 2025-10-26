@@ -11,8 +11,10 @@ import (
 
 	"github.com/adaviloper/gco/internal/branch"
 	"github.com/adaviloper/gco/internal/tickets/bug"
+	"github.com/adaviloper/gco/internal/tickets/epic"
 	"github.com/adaviloper/gco/internal/tickets/spike"
 	"github.com/adaviloper/gco/internal/tickets/story"
+	"github.com/adaviloper/gco/internal/tickets/task"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -37,8 +39,10 @@ var rootCmd = &cobra.Command{
   	fmt.Printf("%v\n", viper.Get("repositories"))
   	ticketTypes := []string{
   		"bug",
+  		"epic",
   		"story",
   		"spike",
+  		"task",
   	}
 
 		selectedType := ""
@@ -53,11 +57,17 @@ var rootCmd = &cobra.Command{
   	case "bug":
   		bug.Run(cmd, args)
   		return nil
+  	case "epic":
+  		epic.Run(cmd, args)
+  		return nil
   	case "spike":
   		spike.Run(cmd, args)
   		return nil
   	case "story":
   		story.Run(cmd, args)
+  		return nil
+  	case "task":
+  		task.Run(cmd, args)
   		return nil
   	}
 
@@ -84,12 +94,14 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().BoolP("remote", "r", false, "Include remote branches")
 
 	rootCmd.Flags().BoolP("bug", "b", false, "Create a bug ticket")
+	rootCmd.Flags().BoolP("epic", "e", false, "Create an epic ticket")
 	rootCmd.Flags().BoolP("story", "s", false, "Create a story ticket")
 	rootCmd.Flags().BoolP("spike", "p", false, "Create a spike ticket")
+	rootCmd.Flags().BoolP("task", "t", false, "Create a task ticket")
 }
 
 func initializeConfig(cmd *cobra.Command) error {

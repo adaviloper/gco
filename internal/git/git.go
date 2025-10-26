@@ -2,9 +2,7 @@ package git
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 
 	"github.com/adaviloper/gco/internal/str_utils"
@@ -60,43 +58,6 @@ func GenerateBranchName(category string, description string) {
 	CheckoutBranch(fmt.Sprintf("%s%s%s-%s", prefix, viper.GetString("separator"), ticketPrefix, branch))
 }
 
-func TicketPrefix() string {
-    // Known repository name → ticket prefix mappings.
-    prefixes := map[string]string{
-        "ultimate-tic-tac-toe": "UTTT",
-        "redwood":              "RW",
-    }
-
-    // Allow tests or callers to override repo name detection.
-    if override := os.Getenv("GCO_REPO_NAME"); override != "" {
-        if p, ok := prefixes[override]; ok {
-            return p
-        }
-        return ""
-    }
-
-    // Try to resolve repository top-level via git, then map base directory.
-    if out, err := Run("rev-parse", "--show-toplevel"); err == nil {
-        repoPath := strings.TrimSpace(string(out))
-        if repoPath != "" {
-            base := filepath.Base(repoPath)
-            if p, ok := prefixes[base]; ok {
-                return p
-            }
-        }
-    }
-
-    // Fallback: use current working directory name.
-    if wd, err := os.Getwd(); err == nil {
-        base := filepath.Base(wd)
-        if p, ok := prefixes[base]; ok {
-            return p
-        }
-    }
-
-    return ""
-}
-
 func GetCurrentRepoName() (string, error) {
 	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
 	output, err := cmd.Output()
@@ -116,7 +77,13 @@ func GetCurrentRepoProperty(prop string) (string, error) {
 	}
 
 	key := fmt.Sprintf("repositories.%s.%s", repo, prop)
-	return viper.GetString(key), nil
+	property := viper.GetString(key)
+	if property == "" {
+		key := fmt.Sprintf("repositories.%s.%s", "default", prop)
+		return viper.GetString(key), nil
+	}
+
+	return property, nil
 }
 
 func GetPrefixForRepo(category string) (string, error) {
