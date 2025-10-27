@@ -22,6 +22,8 @@ separator: "/"
 
 Git utility to simplify creating and switching branches based on a provided pattern matching.
 
+![Visual demonstration](./images/example.png)
+
 ### Branch switching
 
 ```sh
