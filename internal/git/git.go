@@ -12,6 +12,7 @@ import (
 func Run(args ...string) ([]byte, error) {
 	checkoutCommand := exec.Command("git", args...)
 	output, err := checkoutCommand.Output()
+	viper.GetBool("debug")
 
 	if err != nil {
 		return nil, err
@@ -21,7 +22,10 @@ func Run(args ...string) ([]byte, error) {
 }
 
 func CheckoutBranch(branch string) {
-	// fmt.Printf("Switching to [%s]", branch)
+	if viper.GetBool("debug") {
+		fmt.Printf("Switching to [%s]", branch)
+	}
+
 	_, err := Run("checkout", "-B", branch)
 
 	if err != nil {
@@ -52,10 +56,18 @@ func GenerateBranchName(category string, description string) {
 	  return
 	}
 	ticketPrefix, _ := GetCurrentRepoProperty("ticket_prefix")
-	fmt.Printf("ticket prefix: %s\n", ticketPrefix)
+  if viper.GetBool("debug") {
+		fmt.Printf("ticket prefix: %s\n", ticketPrefix)
+  }
 	branch := str_utils.Slugify(description)
-	fmt.Printf("Branch: %s/%s-%s\n", prefix, ticketPrefix, branch)
-	CheckoutBranch(fmt.Sprintf("%s%s%s-%s", prefix, viper.GetString("separator"), ticketPrefix, branch))
+  if viper.GetBool("debug") {
+		fmt.Printf("Branch: %s/%s-%s\n", prefix, ticketPrefix, branch)
+  }
+  if ticketPrefix == "" {
+		CheckoutBranch(fmt.Sprintf("%s%s%s", prefix, viper.GetString("separator"), branch))
+  } else {
+		CheckoutBranch(fmt.Sprintf("%s%s%s-%s", prefix, viper.GetString("separator"), ticketPrefix, branch))
+  }
 }
 
 func GetCurrentRepoName() (string, error) {

@@ -22,9 +22,22 @@ separator: "/"
 
 Git utility to simplify creating and switching branches based on a provided pattern matching.
 
-![Visual demonstration](./images/example.png)
-
 ### Branch switching
+#### Branch creation example
+
+![Branch creation example](./images/branch-checkout.png)
+
+#### Before selection fro duplicate local branches
+
+![Before selection fro duplicate local branches](./images/selection-from-duplicate-branch-before.png)
+
+#### After selection fro duplicate local branches
+
+![After selection fro duplicate local branches](./images/selection-from-duplicate-branch-after.png)
+
+#### Automatic selection from unique branch substring
+
+![Automatic selection from unique branch substring](./images/unique-branch-checkout.png)
 
 ```sh
 gco some-full-branch-name
@@ -33,6 +46,9 @@ gco <partial-string-match>
 ```
 
 ### Branch Creation
+![Branch creation example](./images/branch-checkout.png)
+
+
 ```sh
 gco --ticket <ticket-type> <ticket-id> <some-arbitrary-length-ticket-description>
 ```

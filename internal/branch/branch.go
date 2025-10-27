@@ -53,6 +53,7 @@ func Run(cmd *cobra.Command, args []string) {
 		prompt := promptui.Select{
 			Label: "Which branch would you like to switch to?",
 			Items: branches,
+			HideSelected: true,
 		}
 
 		_, branch, err := prompt.Run()

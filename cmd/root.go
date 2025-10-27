@@ -33,11 +33,16 @@ var rootCmd = &cobra.Command{
 	// Uncoment the following line if your bare application
 	// has an action associated with it:
   RunE: func(cmd *cobra.Command, args []string) error {
-  	fmt.Printf("%v\n", viper.Get("repositories"))
+  	if viper.GetBool("debug") {
+  		fmt.Printf("%v\n", viper.Get("repositories"))
+  	}
 
 		if ticketType != "" {
 			ticketCreator.Run(ticketType, args)
-			fmt.Printf("Created dynamic [%s] ticket", ticketType)
+
+  		if viper.GetBool("debug") {
+				fmt.Printf("Created dynamic [%s] ticket", ticketType)
+  		}
 			return nil
 		}
 
@@ -122,6 +127,8 @@ func initializeConfig(cmd *cobra.Command) error {
 	}
 
 	// This is an optional but useful step to debug your config.
-	// fmt.Println("Configuration initialized. Using config file:", viper.ConfigFileUsed())
+  if viper.GetBool("debug") {
+		fmt.Println("Configuration initialized. Using config file:", viper.ConfigFileUsed())
+  }
 	return nil
 }
