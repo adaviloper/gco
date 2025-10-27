@@ -6,6 +6,18 @@
 go get github.com/adaviloper/gco@latest
 ```
 
+## Configuration
+
+```yaml
+// ~/.config/gco/config.yaml
+repositories:
+  default:
+    ticket_prefix: MY_PREFIX
+    bug: bugfix // optional
+    // add whatever additional mappings you'd like for whatever <ticket-type> value you pass in
+separator: "/"
+```
+
 ## Description
 
 Git utility to simplify creating and switching branches based on a provided pattern matching.
@@ -35,22 +47,17 @@ alias task="gco --ticket task"
 
 # Invoke with
 bug 123 some bug ticket description
+// bugfix/MY_PREFIX-123-some-bug-ticket-description
 epic 123 some epic ticket description
+// epic/MY_PREFIX-123-some-epic-ticket-description
 revert 123 some revert ticket description
+// revert/MY_PREFIX-123-some-revert-ticket-description
 spike 123 some spike ticket description
+// spike/MY_PREFIX-123-some-spike-ticket-description
 story 123 some story ticket description
-bug 123 some bug ticket description
-```
-
-## Configuration
-
-```yaml
-repositories:
-  default:
-    ticket_prefix: MY_PREFIX
-    bug: bugfix // optional
-    // add whatever additional mappings you'd like for whatever <ticket-type> value you pass in
-separator: "/"
+// story/MY_PREFIX-123-some-story-ticket-description
+task 123 some bug ticket description
+// task/MY_PREFIX-123-some-task-ticket-description
 ```
 
 ## Flags
