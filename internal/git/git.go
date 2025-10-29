@@ -33,6 +33,18 @@ func CheckoutBranch(branch string) {
 	}
 }
 
+func CheckoutBranchFromRemote(branch string) {
+	if viper.GetBool("debug") {
+		fmt.Printf("Switching to [%s]", branch)
+	}
+
+	_, err := Run("checkout", branch)
+
+	if err != nil {
+		return
+	}
+}
+
 func CheckForUncommittedWork() bool {
 	hasWork, err := Run("status", "--short")
 

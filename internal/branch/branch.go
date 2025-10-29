@@ -65,7 +65,8 @@ func Run(cmd *cobra.Command, args []string) {
 
 		git.CheckoutBranch(branch)
 	} else {
-		fmt.Println("No matching branches found.")
+		fmt.Println("No matching branches found. Fetching from remote.")
+		git.CheckoutBranchFromRemote(target)
 	}
 }
 
