@@ -46,7 +46,7 @@ func CheckoutBranchFromRemote(branch string) {
 }
 
 func CheckForUncommittedWork() bool {
-	hasWork, err := Run("status", "--short")
+	hasWork, err := Run("status", "--short", "--untracked-files=no")
 
 	if err != nil {
 		fmt.Println("An error occurred while trying to check the status.")
