@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-go get github.com/adaviloper/gco@latest
+go install github.com/adaviloper/gco@latest
 ```
 
 ## Configuration
@@ -15,6 +15,12 @@ repositories:
     ticket_prefix: MY_PREFIX
     bug: bugfix // optional
     // add whatever additional mappings you'd like for whatever <ticket-type> value you pass in
+  <repository_A>:
+    ticket_prefix: REPO_A_PREFIX
+    story: feat // optional
+  <repository_B>:
+    ticket_prefix: REPO_B_PREFIX
+    story: feature // optional
 separator: "/"
 ```
 
