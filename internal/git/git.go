@@ -25,6 +25,13 @@ func CheckoutBranch(branch string) {
 	if viper.GetBool("debug") {
 		fmt.Printf("Switching to [%s]", branch)
 	}
+	
+	if branch == "-" {
+		_, err := Run("checkout", branch)
+		if err != nil {
+			return
+		}
+	}
 
 	_, err := Run("checkout", "-B", branch)
 
