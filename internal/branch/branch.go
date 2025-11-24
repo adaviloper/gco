@@ -78,7 +78,7 @@ func PrepareBranches(stdOut string, target string) []string {
 	})
 
 	branches = arrayutils.Map(branches, func(branch string) string {
-		return strings.Trim(branch, " ")
+		return strings.Trim(strings.Replace(branch, "remotes/origin/", "", 1), " ")
 	})
 
   return branches
