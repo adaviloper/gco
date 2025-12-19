@@ -12,7 +12,6 @@ import (
 func Run(args ...string) ([]byte, error) {
 	checkoutCommand := exec.Command("git", args...)
 	output, err := checkoutCommand.Output()
-	viper.GetBool("debug")
 
 	if err != nil {
 		return nil, err
@@ -23,7 +22,7 @@ func Run(args ...string) ([]byte, error) {
 
 func CheckoutBranch(branch string) {
 	if viper.GetBool("debug") {
-		fmt.Printf("Switching to [%s]", branch)
+		fmt.Printf("Switching to [%s] locally\n", branch)
 	}
 	
 	if branch == "-" {
@@ -42,7 +41,7 @@ func CheckoutBranch(branch string) {
 
 func CheckoutBranchFromRemote(branch string) {
 	if viper.GetBool("debug") {
-		fmt.Printf("Switching to [%s]", branch)
+		fmt.Printf("Switching to [%s] from remote\n", branch)
 	}
 
 	_, err := Run("checkout", branch)

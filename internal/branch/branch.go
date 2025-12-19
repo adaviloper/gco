@@ -45,10 +45,11 @@ func Run(cmd *cobra.Command, args []string) {
 
 	branches := PrepareBranches(string(stdOut), target)
 
+	targetBranch := ""
 	if target == "-" {
-		git.CheckoutBranch(target)
+		targetBranch = target
 	} else if len(branches) == 1 {
-		git.CheckoutBranch(branches[0])
+		targetBranch = branches[0]
 	} else if len(branches) > 1 {
 		prompt := promptui.Select{
 			Label: "Which branch would you like to switch to?",
@@ -56,18 +57,22 @@ func Run(cmd *cobra.Command, args []string) {
 			HideSelected: true,
 		}
 
-		_, branch, err := prompt.Run()
+		_, selectedBranch, err := prompt.Run()
 
 		if err != nil {
 			fmt.Println("No branch selected")
 			return
 		}
 
-		git.CheckoutBranch(branch)
-	} else {
-		fmt.Println("No matching branches found. Fetching from remote.")
-		git.CheckoutBranchFromRemote(target)
+		targetBranch = selectedBranch
 	}
+	
+
+	if remote {
+		git.CheckoutBranchFromRemote(targetBranch)
+	} else {
+		git.CheckoutBranch(target)
+	} 
 }
 
 func PrepareBranches(stdOut string, target string) []string {
