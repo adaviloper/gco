@@ -5,13 +5,13 @@ package branch
 
 import (
 	"fmt"
-	"os/exec"
 	"strings"
 
 	"github.com/adaviloper/gco/internal/git"
 	"github.com/judedaryl/go-arrayutils"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // switchCmd represents the switch command
@@ -34,9 +34,7 @@ func Run(cmd *cobra.Command, args []string) {
 		ops = append(ops, "-a")
 	}
 
-	shellCommand := exec.Command("git", ops...)
-
-	stdOut, err := shellCommand.Output()
+	stdOut, err := git.Run(ops...)
 
 	if err != nil {
 		fmt.Printf("Failed to get branches: [%s]", err.Error())
@@ -68,14 +66,15 @@ func Run(cmd *cobra.Command, args []string) {
 	}
 	
 
-	if remote {
-		git.CheckoutBranchFromRemote(targetBranch)
-	} else {
-		git.CheckoutBranch(target)
-	} 
+	git.CheckoutBranch(targetBranch)
 }
 
 func PrepareBranches(stdOut string, target string) []string {
+  if viper.GetBool("debug") {
+		fmt.Printf("Found branches: %s\n", stdOut)
+		fmt.Printf("Target branch: %s\n", target)
+  }
+
 	branches := strings.Split(stdOut, "\n")
 
 	branches = arrayutils.Filter(branches, func(branch string) bool {

@@ -22,30 +22,21 @@ func Run(args ...string) ([]byte, error) {
 
 func CheckoutBranch(branch string) {
 	if viper.GetBool("debug") {
-		fmt.Printf("Switching to [%s] locally\n", branch)
-	}
-	
-	if branch == "-" {
-		_, err := Run("checkout", branch)
-		if err != nil {
-			return
-		}
+		fmt.Printf("Switching to [%s]\n", branch)
 	}
 
-	_, err := Run("checkout", "-B", branch)
-
+	_, err := Run("checkout", branch)
 	if err != nil {
 		return
 	}
 }
 
-func CheckoutBranchFromRemote(branch string) {
+func CreateBranch(branch string) {
 	if viper.GetBool("debug") {
-		fmt.Printf("Switching to [%s] from remote\n", branch)
+		fmt.Printf("Creating branch [%s]\n", branch)
 	}
 
-	_, err := Run("checkout", branch)
-
+	_, err := Run("checkout", "-B", branch)
 	if err != nil {
 		return
 	}
@@ -62,12 +53,6 @@ func CheckForUncommittedWork() bool {
 	return len(hasWork) > 0
 }
 
-type TicketData struct {
-	Type string
-	ID int
-	Description string
-}
-
 func GenerateBranchName(category string, description string) {
 	prefix, err := GetPrefixForRepo(category)
 	if err != nil {
@@ -82,9 +67,9 @@ func GenerateBranchName(category string, description string) {
 		fmt.Printf("Branch: %s/%s-%s\n", prefix, ticketPrefix, branch)
   }
   if ticketPrefix == "" {
-		CheckoutBranch(fmt.Sprintf("%s%s%s", prefix, viper.GetString("separator"), branch))
+		CreateBranch(fmt.Sprintf("%s%s%s", prefix, viper.GetString("separator"), branch))
   } else {
-		CheckoutBranch(fmt.Sprintf("%s%s%s-%s", prefix, viper.GetString("separator"), ticketPrefix, branch))
+		CreateBranch(fmt.Sprintf("%s%s%s-%s", prefix, viper.GetString("separator"), ticketPrefix, branch))
   }
 }
 
